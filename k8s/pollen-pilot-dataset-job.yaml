@@ -1,0 +1,130 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: pollen-pilot-dataset
+  namespace: stenc-ns
+spec:
+  template:
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      initContainers:
+        - name: s3-sync-pilot
+          image: amazon/aws-cli:latest
+          command:
+            - sh
+            - -c
+            - |
+              aws --endpoint-url "$S3_ENDPOINT" s3 ls s3://$S3_BUCKET/Ostatni/Pollen_latitude/Source/ | awk '/PRE/{print $2}' > /tmp/localities.txt
+              for loc in $(cat /tmp/localities.txt); do
+                aws --endpoint-url "$S3_ENDPOINT" s3 ls s3://$S3_BUCKET/Ostatni/Pollen_latitude/Source/$loc | awk '/PRE/{print $2}' > /tmp/species.txt
+                for spec in $(cat /tmp/species.txt); do
+                  FILE=$(aws --endpoint-url "$S3_ENDPOINT" s3 ls s3://$S3_BUCKET/Ostatni/Pollen_latitude/Source/$loc$spec | awk '/.czi/{print $4}' | head -n 1)
+                  if [ -n "$FILE" ]; then
+                    echo "Downloading $loc$spec$FILE..."
+                    aws --endpoint-url "$S3_ENDPOINT" s3 cp "s3://$S3_BUCKET/Ostatni/Pollen_latitude/Source/$loc$spec$FILE" "/mnt/czi_data/$loc$spec$FILE" --no-verify-ssl
+                  fi
+                done
+              done
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+          resources:
+            requests:
+              cpu: "1"
+              memory: "1Gi"
+            limits:
+              cpu: "2"
+              memory: "2Gi"
+          env:
+            - name: S3_ENDPOINT
+              value: "https://s3.cl4.du.cesnet.cz"
+            - name: S3_BUCKET
+              value: "bucket"
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: s3-credentials
+                  key: access-key
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: s3-credentials
+                  key: secret-key
+          volumeMounts:
+            - mountPath: /mnt/czi_data
+              name: scratch
+      containers:
+        - name: czi-preprocessor
+          image: ttl.sh/pollen-czi-8c8a6c09:24h
+          imagePullPolicy: Always
+          command:
+            - python
+            - czi_ingest.py
+            - --root
+            - /mnt/czi_data
+            - --out
+            - /tmp/Pilot_Dataset
+            - --channels
+            - "0"
+            - "1"
+            - "2"
+            - --z
+            - mip
+            - --overlap
+            - "0.20"
+            - --upload
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+          resources:
+            limits:
+              memory: "24Gi" 
+              cpu: "6"
+            requests:
+              memory: "16Gi"
+              cpu: "2"
+          env:
+            - name: S3_ENDPOINT
+              value: "https://s3.cl4.du.cesnet.cz"
+            - name: S3_BUCKET
+              value: "bucket"
+            - name: S3_PREFIX
+              value: "Ostatni/Pollen_latitude"
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: s3-credentials
+                  key: access-key
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: s3-credentials
+                  key: secret-key
+          volumeMounts:
+            - mountPath: /dev/shm
+              name: dshm
+            - mountPath: /mnt/czi_data
+              name: scratch
+            - mountPath: /tmp
+              name: tmp
+      volumes:
+        - name: dshm
+          emptyDir:
+            medium: Memory
+            sizeLimit: "8Gi"
+        - name: scratch
+          emptyDir:
+            sizeLimit: "20Gi" 
+        - name: tmp
+          emptyDir:
+            sizeLimit: "50Gi"
+      restartPolicy: Never
+  backoffLimit: 1

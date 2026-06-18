@@ -1,0 +1,5 @@
+.aws_access
+.aws_secret
+kubeconfig.yaml
+__pycache__/
+.venv/

@@ -1,0 +1,87 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pollen-train-general
+  namespace: stenc-ns
+spec:
+  securityContext:
+    runAsNonRoot: true
+    seccompProfile:
+      type: RuntimeDefault
+  restartPolicy: Never
+  containers:
+        - name: train-worker
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+          image: IMAGE_PLACEHOLDER
+          imagePullPolicy: Always
+          command:
+            - sh
+            - -c
+            - |
+              echo "Preparing container paths..."
+              mkdir -p /app/Staged_area /app/Staged_negatives /app/Curated_Retrain_Data /app/models/general_pollen
+              
+              echo "Downloading datasets via S3..."
+              aws --endpoint-url "$S3_ENDPOINT" s3 sync "s3://$S3_BUCKET/Ostatni/Pollen_latitude/Staged_area/" /app/Staged_area/ --no-verify-ssl
+              aws --endpoint-url "$S3_ENDPOINT" s3 sync "s3://$S3_BUCKET/Ostatni/Pollen_latitude/Staged_negatives/" /app/Staged_negatives/ --no-verify-ssl
+              
+              echo "Starting YOLOv8 general training..."
+              export STAGED_AREA=/app/Staged_area/
+              export STAGED_NEGATIVES=/app/Staged_negatives/
+              export STAGED_CURATED=/app/Curated_Retrain_Data/
+              export DATASET_ROOT=/app/temp_dataset
+              export MODEL_DIR=/app/models/general_pollen/
+              
+              python3 /scripts/train_general.py
+              
+              echo "Uploading best weights to S3..."
+              s5cmd --endpoint-url "$S3_ENDPOINT" --no-verify-ssl sync "/app/models/general_pollen/*" "s3://$S3_BUCKET/Ostatni/Pollen_latitude/trained_models/general_pollen/"
+              
+              echo "Generating Email notification..."
+              python3 /notify/notify.py --type training --job_name "YOLO General Pollen Model" --results /app/models/general_pollen/latest.pt
+          resources:
+            limits:
+              memory: "32Gi"
+              cpu: "8"
+              nvidia.com/gpu: "1"
+            requests:
+              memory: "16Gi"
+              cpu: "4"
+              nvidia.com/gpu: "1"
+          env:
+            - name: S3_ENDPOINT
+              value: "https://s3.cl4.du.cesnet.cz"
+            - name: S3_BUCKET
+              value: "bucket"
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: s3-credentials
+                  key: access-key
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: s3-credentials
+                  key: secret-key
+            - name: GMAIL_APP_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: email-credentials
+                  key: GMAIL_APP_PASSWORD
+          volumeMounts:
+            - mountPath: /dev/shm
+              name: dshm
+            - mountPath: /notify
+              name: scripts-vol
+  volumes:
+    - name: dshm
+      emptyDir:
+        medium: Memory
+        sizeLimit: "16Gi"
+    - name: scripts-vol
+      configMap:
+        name: notify-script

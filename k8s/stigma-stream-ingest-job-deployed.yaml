@@ -1,0 +1,134 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: stigma-stream-ingest
+  namespace: stenc-ns
+spec:
+  template:
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      initContainers:
+        - name: s3-sync-stigma
+          image: amazon/aws-cli:latest
+          command:
+            - sh
+            - -c
+            - |
+              aws --endpoint-url "$S3_ENDPOINT" s3 cp "s3://$S3_BUCKET/PEG/Stigma/trained_models/general_pollen/latest.pt" "/mnt/czi_data/latest.pt" --no-verify-ssl
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+          resources:
+            requests:
+              cpu: "1"
+              memory: "1Gi"
+            limits:
+              cpu: "2"
+              memory: "2Gi"
+          env:
+            - name: S3_ENDPOINT
+              value: "https://s3.cl4.du.cesnet.cz"
+            - name: S3_BUCKET
+              value: "bucket"
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: s3-credentials
+                  key: access-key
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: s3-credentials
+                  key: secret-key
+          volumeMounts:
+            - mountPath: /mnt/czi_data
+              name: scratch
+      containers:
+        - name: czi-preprocessor
+          image: ttl.sh/yolov8-pollen-stigma-1781438158:1h
+          imagePullPolicy: Always
+          command:
+            - sh
+            - -c
+            - |
+              python /app/czi_stream_ingest.py \
+                --s3-prefix "PEG/Stigma/Source" \
+                --model /mnt/czi_data/latest.pt \
+                --work-dir /mnt/czi_data
+              
+              echo "Running evaluation on new detections..."
+              python /app/evaluate_results.py --s3-prefix "PEG/Stigma/Detected"
+              
+              echo "Generating Email notification..."
+              python3 /notify/notify.py --type detection --job_name "Stigma Stream Inference"
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+          resources:
+            limits:
+              memory: "24Gi" 
+              cpu: "6"
+              nvidia.com/gpu: "1"
+            requests:
+              memory: "16Gi"
+              cpu: "2"
+          env:
+            - name: S3_ENDPOINT
+              value: "https://s3.cl4.du.cesnet.cz"
+            - name: S3_BUCKET
+              value: "bucket"
+            - name: S3_PREFIX
+              value: "PEG/Stigma"
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: s3-credentials
+                  key: access-key
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: s3-credentials
+                  key: secret-key
+            - name: GMAIL_APP_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: email-credentials
+                  key: GMAIL_APP_PASSWORD
+          volumeMounts:
+            - mountPath: /dev/shm
+              name: dshm
+            - mountPath: /mnt/czi_data
+              name: scratch
+            - mountPath: /tmp
+              name: tmp
+            - mountPath: /script
+              name: czi-script
+            - mountPath: /notify
+              name: scripts-vol
+      volumes:
+        - name: dshm
+          emptyDir:
+            medium: Memory
+            sizeLimit: "8Gi"
+        - name: scratch
+          emptyDir:
+            sizeLimit: "150Gi"
+        - name: tmp
+          emptyDir:
+            sizeLimit: "50Gi"
+        - name: czi-script
+          configMap:
+            name: czi-ingest-script
+        - name: scripts-vol
+          configMap:
+            name: notify-script
+      restartPolicy: Never
+  backoffLimit: 1

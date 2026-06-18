@@ -1,0 +1,69 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: pollen-eval-job
+  namespace: stenc-ns
+spec:
+  template:
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      containers:
+        - name: evaluator
+          image: IMAGE_PLACEHOLDER
+          imagePullPolicy: Always
+          command:
+            - sh
+            - -c
+            - |
+              python /app/evaluate_results.py --s3-prefix "Ostatni/Pollen_latitude/Detected/"
+              
+              echo "Generating Email notification..."
+              python3 /notify/notify.py --type detection --job_name "Pollen Post-Processing Evaluation"
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+          resources:
+            limits:
+              memory: "8Gi" 
+              cpu: "2"
+            requests:
+              memory: "4Gi"
+              cpu: "1"
+          env:
+            - name: S3_ENDPOINT
+              value: "https://s3.cl4.du.cesnet.cz"
+            - name: S3_BUCKET
+              value: "bucket"
+            - name: S3_PREFIX
+              value: "Ostatni/Pollen_latitude"
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: s3-credentials
+                  key: access-key
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: s3-credentials
+                  key: secret-key
+            - name: GMAIL_APP_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: email-credentials
+                  key: GMAIL_APP_PASSWORD
+          volumeMounts:
+            - mountPath: /notify
+              name: scripts-vol
+      volumes:
+        - name: scripts-vol
+          configMap:
+            name: notify-script
+      restartPolicy: Never
+  backoffLimit: 1

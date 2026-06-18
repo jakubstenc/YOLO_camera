@@ -1,0 +1,16 @@
+00:02.617  blend            | Read blend: "/home/meow/Documents/Antigravity/YOLO_camera/box_blender_files/Box_bottom.blend"
+<bpy_struct, PaperAddonPreferences at 0x77f86a50c8a0> <class 'bl_ext.blender_org.export_paper_model.PaperAddonPreferences'>
+<bpy_struct, PaperAddonPreferences at 0x77f86a50c8a0> <class 'bl_ext.blender_org.export_paper_model.PaperAddonPreferences'>
+BOTTOM DIMENSIONS: <Vector (117.4979, 208.5200, 45.8000)>
+BOTTOM BOUNDING BOX RELATIVE TO LOCATION:
+  -9.28, -104.26, -19.46
+  -9.28, -104.26, 26.34
+  -9.28, 104.26, 26.34
+  -9.28, 104.26, -19.46
+  108.22, -104.26, -19.46
+  108.22, -104.26, 26.34
+  108.22, 104.26, 26.34
+  108.22, 104.26, -19.46
+Blender 5.1.2 (hash ec6e62d40fa9 built 2026-05-19 02:18:37)
+
+Blender quit

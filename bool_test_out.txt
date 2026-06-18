@@ -1,0 +1,8 @@
+00:01.624  blend            | Read blend: "/home/meow/Documents/Antigravity/YOLO_camera/box_blender_files/Box_bottom.blend"
+<bpy_struct, PaperAddonPreferences at 0x72d7e7bb48a0> <class 'bl_ext.blender_org.export_paper_model.PaperAddonPreferences'>
+<bpy_struct, PaperAddonPreferences at 0x72d7e7bb48a0> <class 'bl_ext.blender_org.export_paper_model.PaperAddonPreferences'>
+BEFORE Verts: 2123
+AFTER FLOAT Verts: 2195
+Blender 5.1.2 (hash ec6e62d40fa9 built 2026-05-19 02:18:37)
+
+Blender quit

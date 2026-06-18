@@ -1,0 +1,11 @@
+<bpy_struct, PaperAddonPreferences at 0x7d0cde2888a0> <class 'bl_ext.blender_org.export_paper_model.PaperAddonPreferences'>
+<bpy_struct, PaperAddonPreferences at 0x7d0cde2888a0> <class 'bl_ext.blender_org.export_paper_model.PaperAddonPreferences'>
+Help on BPyOpFunction:
+
+bpy.ops.wm.stl_export(filepath="", check_existin...s='Z', apply_modifiers=True, filter_glob="*.stl")
+    bpy.ops.wm.stl_export(filepath="", check_existing=True, filter_blender=False, filter_backup=False, filter_image=False, filter_movie=False, filter_python=False, filter_font=False, filter_sound=False, filter_text=False, filter_archive=False, filter_btx=False, filter_alembic=False, filter_usd=False, filter_obj=False, filter_volume=False, filter_folder=True, filter_blenlib=False, filemode=8, display_type='DEFAULT', sort_method='DEFAULT', ascii_format=False, use_batch=False, export_selected_objects=False, collection="", global_scale=1, use_scene_unit=False, forward_axis='Y', up_axis='Z', apply_modifiers=True, filter_glob="*.stl")
+    Save the scene to an STL file
+
+Blender 5.1.2 (hash ec6e62d40fa9 built 2026-05-19 02:18:37)
+
+Blender quit

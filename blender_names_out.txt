@@ -1,0 +1,7 @@
+00:01.307  blend            | Read blend: "/home/meow/Documents/Antigravity/YOLO_camera/box_blender_files/Box_upper.blend"
+<bpy_struct, PaperAddonPreferences at 0x70c07e9608a0> <class 'bl_ext.blender_org.export_paper_model.PaperAddonPreferences'>
+<bpy_struct, PaperAddonPreferences at 0x70c07e9608a0> <class 'bl_ext.blender_org.export_paper_model.PaperAddonPreferences'>
+OBJECTS: ['Camera', 'Light', 'Rugged Box - Lid - 200x185x60']
+Blender 5.1.2 (hash ec6e62d40fa9 built 2026-05-19 02:18:37)
+
+Blender quit

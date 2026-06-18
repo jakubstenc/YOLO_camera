@@ -1,0 +1,15 @@
+[Unit]
+Description=PolliCam OTA Updater Service
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=pi
+WorkingDirectory=/home/pi/YOLO_camera/software/updater
+ExecStart=/bin/bash /home/pi/YOLO_camera/software/updater/sync_repo.sh
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

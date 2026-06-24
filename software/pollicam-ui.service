@@ -1,0 +1,14 @@
+[Unit]
+Description=PolliCam Mobile Web UI
+After=network.target
+
+[Service]
+User=policam1
+WorkingDirectory=/home/policam1/YOLO_camera/software
+ExecStart=/usr/bin/python3 /home/policam1/YOLO_camera/software/mobile_ui/app.py
+Restart=always
+RestartSec=5
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=multi-user.target

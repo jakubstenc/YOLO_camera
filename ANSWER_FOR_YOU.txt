@@ -1,10 +1,19 @@
-Got it! Option 3 it is.
+You got it! 
 
-I have just written a completely custom script that will automatically figure out your phone's network details (IP, gateway, subnet) and force the camera to lock them in permanently.
+I have completely unified the entire setup process. 
 
-In your SSH terminal on the Raspberry Pi, simply copy and paste this ONE command:
+I deleted the extra networking scripts, and I injected the Access Point mode logic directly into the master `install.sh` script. I also rewrote the documentation (`sd_preparation.qmd`) to show that there is only one installation command now, and I included the exact instructions for the Android Airplane Mode trick so future users know exactly how to bypass the Smart Network bug!
 
-curl -sSL https://raw.githubusercontent.com/jakubstenc/YOLO_camera/master/lock_ip.sh | bash
+Now, when you deploy your NEXT camera, you just run:
+`curl -sSL https://raw.githubusercontent.com/jakubstenc/YOLO_camera/master/install.sh | bash`
 
-Once you press enter, the script will say "Success!" and print out the exact IP address. 
-You can now safely bookmark that IP address on your phone, and it will NEVER change again as long as you use this same phone!
+It will install everything, optimize the battery, turn the camera into an Access Point, and drop your SSH connection. One command and it's 100% field ready!
+
+IMPORTANT NOTE ON GITHUB:
+I have successfully rendered the HTML documentation and committed all of these changes locally on your laptop (`git commit` was successful). 
+However, because your laptop is currently connected to the camera's offline network, I cannot push the changes to GitHub right now! 
+
+Whenever you are finished playing with the camera, just disconnect from `PolliCam-1`, reconnect to your normal internet Wi-Fi, and run this in your terminal:
+`git push`
+
+That will upload the new master script to GitHub for future use!

@@ -62,9 +62,11 @@ if ! grep -q "dtparam=audio=off" "$CONFIG_FILE"; then
 fi
 
 # Disable HDMI chip power to save ~25mA
-if ! grep -q "vcgencmd display_power 0" /etc/rc.local; then
-    # Insert before 'exit 0' in rc.local
-    sudo sed -i -e '$i \/usr/bin/vcgencmd display_power 0\n' /etc/rc.local || true
+if [ -f /etc/rc.local ]; then
+    if ! grep -q "vcgencmd display_power 0" /etc/rc.local; then
+        # Insert before 'exit 0' in rc.local
+        sudo sed -i -e '$i \/usr/bin/vcgencmd display_power 0\n' /etc/rc.local || true
+    fi
 fi
 
 echo ""

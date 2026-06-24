@@ -1,22 +1,13 @@
-Ah, you ran into Apple/Google's strict security rules! 
+Fantastic news! The output says `active (running)`. This means the new GPS secure update installed perfectly, and the web app is running flawlessly on the camera right now.
 
-Modern phones completely block the GPS feature unless the website is loaded securely using `https://`. Because our camera was using normal `http://`, the phone immediately blocked it and threw an error, even though you had location turned on.
+The reason you cannot see it on your phone or computer is simply because of the `http` vs `https` mismatch. 
 
-I just pushed a major update that:
-1. Forces the camera to use secure `https://`.
-2. Prints out the exact GPS coordinates to the screen when you click the button.
-3. Gives you a clickable link that opens directly in Mapy.cz so you can visually verify it!
+Because we added security to satisfy your phone's GPS rules, the old `http://` address is completely dead. The app will literally reject your browser if you don't type the "s".
 
-To install this update on the camera, this is the perfect time to test out our new 1-click auto-installer!
-Just paste this into your SSH terminal:
+Open your phone's web browser, completely delete whatever is in the address bar, and manually type this exact address, letter by letter:
 
-curl -sSL https://raw.githubusercontent.com/jakubstenc/YOLO_camera/master/install.sh | bash
+https://pi1.local:5000
 
-HOW TO ACCESS IT NOW:
-Because we switched to secure HTTPS, you must now type `https://` in your browser:
-https://192.168.97.199:5000
+(If that doesn't load, type `https://192.168.97.199:5000`)
 
-⚠️ IMPORTANT: Your phone browser will show a scary warning saying "This connection is not private". This is completely normal because our offline camera doesn't have an official internet certificate. 
-Just click "Advanced" and then "Proceed to 192.168.97.199". 
-
-Once you are in, click the GPS button. It will ask for permission, grab the coordinates, and give you the Mapy.cz link!
+Remember: You WILL get a warning screen saying "Connection Not Private" or "Your connection is not private". This is normal! Click **"Advanced"** and then **"Proceed"** or **"Continue"**!

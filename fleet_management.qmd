@@ -1,0 +1,35 @@
+---
+title: "Fleet Management"
+---
+
+# Fleet Management
+
+As your PolliCam deployment grows, it's crucial to curate and track your cameras. The system uses a centralized JSON registry to identify cameras, and this page serves as your human-readable inventory.
+
+## 1. The Fleet Registry (`fleet_registry.json`)
+
+The PolliCam software automatically identifies which camera it is running on by reading the Raspberry Pi's CPU hardware serial number. It looks up this serial number in the `software/fleet_registry.json` file.
+
+**Example `fleet_registry.json`:**
+```json
+{
+  "000000001a2b3c4d": "PolliCam-01",
+  "00000000deadbeef": "PolliCam-02"
+}
+```
+
+Whenever you prepare a new SD card for a new Raspberry Pi:
+1. Run `cat /sys/firmware/devicetree/base/serial-number` on the Pi to get its serial.
+2. Add that serial and your chosen name to `fleet_registry.json`.
+
+## 2. Camera Inventory
+
+Use this table to curate your cameras, their hostnames (for connecting via your phone), and their hardware IDs.
+
+| Camera Name | Hostname / Address | Passwords | Hardware Serial | Deployment Site |
+| :--- | :--- | :--- | :--- | :--- |
+| **PolliCam-01** | `pollicam-01.local` | `pollicam` | `000000001a2b3c4d` | Site A (Meadow) |
+| **PolliCam-02** | `pollicam-02.local` | `pollicam` | `00000000deadbeef` | Site B (Forest Edge) |
+| **PolliCam-03** | `pollicam-03.local` | `pollicam` | `TBD` | Unassigned |
+
+> **Tip:** You can access any camera's control panel from your phone by typing `http://<hostname>:5000` in your web browser, as long as it's connected to your mobile hotspot!

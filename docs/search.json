@@ -42,6 +42,20 @@
     "text": "The metadata sidecar contains summary statistics for each session:\n{\n  \"session_id\": \"session_20260618\",\n  \"frames_processed\": 1420,\n  \"total_detections\": 35,\n  \"classes_found\": {\n    \"Apis_mellifera\": 30,\n    \"Bombus_spp\": 5\n  }\n}\nYou can load these JSON files directly into R or Python for downstream ecological analysis."
   },
   {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "PolliCam Field Infrastructure",
+    "section": "",
+    "text": "This is the comprehensive documentation for the YOLO Camera project (PolliCam). Here you will find everything needed to assemble, deploy, and manage the field cameras.\n\n\n\nHardware & Models\nSD Card Preparation\nOperation & Deployment\nData Management"
+  },
+  {
+    "objectID": "index.html#quick-links",
+    "href": "index.html#quick-links",
+    "title": "PolliCam Field Infrastructure",
+    "section": "",
+    "text": "Hardware & Models\nSD Card Preparation\nOperation & Deployment\nData Management"
+  },
+  {
     "objectID": "operation_deployment.html",
     "href": "operation_deployment.html",
     "title": "Operation & Deployment",
@@ -63,18 +77,25 @@
     "text": "Mounting: Ensure the 3D-printed enclosure is securely mounted at the observation site.\nPower: Connect the power source (battery pack or solar controller) to the Pi.\nBoot Sequence: Wait approximately 60 seconds for the Pi to boot and the daemon to initialize.\nNetwork: If using a mobile hotspot for real-time syncing, ensure the hotspot is active. The daemon will automatically detect the connection and begin uploading data. If no connection is found, it will log locally and upload later.\nValidation: Connect to the same network as the camera and verify SSH access to ensure it is running without errors.\n\n# Check daemon logs\njournalctl -u pollicam -f"
   },
   {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "PolliCam Field Infrastructure",
+    "objectID": "fleet_management.html",
+    "href": "fleet_management.html",
+    "title": "Fleet Management",
     "section": "",
-    "text": "This is the comprehensive documentation for the YOLO Camera project (PolliCam). Here you will find everything needed to assemble, deploy, and manage the field cameras.\n\n\n\nHardware & Models\nSD Card Preparation\nOperation & Deployment\nData Management"
+    "text": "As your PolliCam deployment grows, it’s crucial to curate and track your cameras. The system uses a centralized JSON registry to identify cameras, and this page serves as your human-readable inventory.\n\n\nThe PolliCam software automatically identifies which camera it is running on by reading the Raspberry Pi’s CPU hardware serial number. It looks up this serial number in the software/fleet_registry.json file.\nExample fleet_registry.json:\n{\n  \"000000001a2b3c4d\": \"PolliCam-01\",\n  \"00000000deadbeef\": \"PolliCam-02\"\n}\nWhenever you prepare a new SD card for a new Raspberry Pi: 1. Run cat /sys/firmware/devicetree/base/serial-number on the Pi to get its serial. 2. Add that serial and your chosen name to fleet_registry.json.\n\n\n\nUse this table to curate your cameras, their hostnames (for connecting via your phone), and their hardware IDs.\n\n\n\n\n\n\n\n\n\n\nCamera Name\nHostname / Address\nPasswords\nHardware Serial\nDeployment Site\n\n\n\n\nPolliCam-01\npollicam-01.local\npollicam\n000000001a2b3c4d\nSite A (Meadow)\n\n\nPolliCam-02\npollicam-02.local\npollicam\n00000000deadbeef\nSite B (Forest Edge)\n\n\nPolliCam-03\npollicam-03.local\npollicam\nTBD\nUnassigned\n\n\n\n\nTip: You can access any camera’s control panel from your phone by typing http://&lt;hostname&gt;:5000 in your web browser, as long as it’s connected to your mobile hotspot!"
   },
   {
-    "objectID": "index.html#quick-links",
-    "href": "index.html#quick-links",
-    "title": "PolliCam Field Infrastructure",
+    "objectID": "fleet_management.html#the-fleet-registry-fleet_registry.json",
+    "href": "fleet_management.html#the-fleet-registry-fleet_registry.json",
+    "title": "Fleet Management",
     "section": "",
-    "text": "Hardware & Models\nSD Card Preparation\nOperation & Deployment\nData Management"
+    "text": "The PolliCam software automatically identifies which camera it is running on by reading the Raspberry Pi’s CPU hardware serial number. It looks up this serial number in the software/fleet_registry.json file.\nExample fleet_registry.json:\n{\n  \"000000001a2b3c4d\": \"PolliCam-01\",\n  \"00000000deadbeef\": \"PolliCam-02\"\n}\nWhenever you prepare a new SD card for a new Raspberry Pi: 1. Run cat /sys/firmware/devicetree/base/serial-number on the Pi to get its serial. 2. Add that serial and your chosen name to fleet_registry.json."
+  },
+  {
+    "objectID": "fleet_management.html#camera-inventory",
+    "href": "fleet_management.html#camera-inventory",
+    "title": "Fleet Management",
+    "section": "",
+    "text": "Use this table to curate your cameras, their hostnames (for connecting via your phone), and their hardware IDs.\n\n\n\n\n\n\n\n\n\n\nCamera Name\nHostname / Address\nPasswords\nHardware Serial\nDeployment Site\n\n\n\n\nPolliCam-01\npollicam-01.local\npollicam\n000000001a2b3c4d\nSite A (Meadow)\n\n\nPolliCam-02\npollicam-02.local\npollicam\n00000000deadbeef\nSite B (Forest Edge)\n\n\nPolliCam-03\npollicam-03.local\npollicam\nTBD\nUnassigned\n\n\n\n\nTip: You can access any camera’s control panel from your phone by typing http://&lt;hostname&gt;:5000 in your web browser, as long as it’s connected to your mobile hotspot!"
   },
   {
     "objectID": "sd_preparation.html",

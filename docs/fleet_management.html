@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Data Management – YOLO Camera Documentation</title>
+<title>Fleet Management – YOLO Camera Documentation</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -144,11 +144,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span class="menu-text">Operation</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./fleet_management.html"> 
+    <a class="nav-link active" href="./fleet_management.html" aria-current="page"> 
 <span class="menu-text">Fleet &amp; Cameras</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="./data_management.html" aria-current="page"> 
+    <a class="nav-link" href="./data_management.html"> 
 <span class="menu-text">Data</span></a>
   </li>  
 </ul>
@@ -167,14 +167,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#downloading-data-and-metadata" id="toc-downloading-data-and-metadata" class="nav-link active" data-scroll-target="#downloading-data-and-metadata"><span class="header-section-number">1</span> Downloading Data and Metadata</a>
+  <li><a href="#fleet-management" id="toc-fleet-management" class="nav-link active" data-scroll-target="#fleet-management"><span class="header-section-number">1</span> Fleet Management</a>
   <ul class="collapse">
-  <li><a href="#accessing-cesnet-storage" id="toc-accessing-cesnet-storage" class="nav-link" data-scroll-target="#accessing-cesnet-storage"><span class="header-section-number">1.1</span> Accessing CESNET Storage</a>
-  <ul class="collapse">
-  <li><a href="#directory-structure" id="toc-directory-structure" class="nav-link" data-scroll-target="#directory-structure"><span class="header-section-number">1.1.1</span> Directory Structure</a></li>
-  <li><a href="#retrieving-metadata" id="toc-retrieving-metadata" class="nav-link" data-scroll-target="#retrieving-metadata"><span class="header-section-number">1.1.2</span> Retrieving Metadata</a></li>
-  </ul></li>
-  <li><a href="#parsing-metadata" id="toc-parsing-metadata" class="nav-link" data-scroll-target="#parsing-metadata"><span class="header-section-number">1.2</span> Parsing Metadata</a></li>
+  <li><a href="#the-fleet-registry-fleet_registry.json" id="toc-the-fleet-registry-fleet_registry.json" class="nav-link" data-scroll-target="#the-fleet-registry-fleet_registry.json"><span class="header-section-number">1.1</span> 1. The Fleet Registry (<code>fleet_registry.json</code>)</a></li>
+  <li><a href="#camera-inventory" id="toc-camera-inventory" class="nav-link" data-scroll-target="#camera-inventory"><span class="header-section-number">1.2</span> 2. Camera Inventory</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -184,7 +180,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Data Management</h1>
+<h1 class="title">Fleet Management</h1>
 </div>
 
 
@@ -201,43 +197,66 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="downloading-data-and-metadata" class="level1" data-number="1">
-<h1 data-number="1"><span class="header-section-number">1</span> Downloading Data and Metadata</h1>
-<p>The PolliCam pushes all captured images and JSON metadata sidecars to a central storage cluster.</p>
-<section id="accessing-cesnet-storage" class="level2" data-number="1.1">
-<h2 data-number="1.1" class="anchored" data-anchor-id="accessing-cesnet-storage"><span class="header-section-number">1.1</span> Accessing CESNET Storage</h2>
-<p>Data is synced via WebDAV. You can retrieve it using standard tools like <code>curl</code>, <code>wget</code>, or dedicated WebDAV clients.</p>
-<section id="directory-structure" class="level3" data-number="1.1.1">
-<h3 data-number="1.1.1" class="anchored" data-anchor-id="directory-structure"><span class="header-section-number">1.1.1</span> Directory Structure</h3>
-<p>The server organizes data by camera identity and session ID:</p>
-<pre class="text"><code>/pollicam_data/
-├── PolliCam_01/
-│   ├── session_20260618/
-│   │   ├── session_20260618_120500.jpg
-│   │   └── session_metadata.json
-├── PolliCam_02/
-...</code></pre>
+<section id="fleet-management" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Fleet Management</h1>
+<p>As your PolliCam deployment grows, it’s crucial to curate and track your cameras. The system uses a centralized JSON registry to identify cameras, and this page serves as your human-readable inventory.</p>
+<section id="the-fleet-registry-fleet_registry.json" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="the-fleet-registry-fleet_registry.json"><span class="header-section-number">1.1</span> 1. The Fleet Registry (<code>fleet_registry.json</code>)</h2>
+<p>The PolliCam software automatically identifies which camera it is running on by reading the Raspberry Pi’s CPU hardware serial number. It looks up this serial number in the <code>software/fleet_registry.json</code> file.</p>
+<p><strong>Example <code>fleet_registry.json</code>:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"000000001a2b3c4d"</span><span class="fu">:</span> <span class="st">"PolliCam-01"</span><span class="fu">,</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"00000000deadbeef"</span><span class="fu">:</span> <span class="st">"PolliCam-02"</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Whenever you prepare a new SD card for a new Raspberry Pi: 1. Run <code>cat /sys/firmware/devicetree/base/serial-number</code> on the Pi to get its serial. 2. Add that serial and your chosen name to <code>fleet_registry.json</code>.</p>
 </section>
-<section id="retrieving-metadata" class="level3" data-number="1.1.2">
-<h3 data-number="1.1.2" class="anchored" data-anchor-id="retrieving-metadata"><span class="header-section-number">1.1.2</span> Retrieving Metadata</h3>
-<p>To download the metadata for analysis, you can use <code>rsync</code> or download directly via your browser if the WebDAV server allows it.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example: downloading a specific session's metadata</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-u</span> username:password <span class="at">-O</span> https://storage.cesnet.cz/pollicam/PolliCam_01/session_20260618/session_metadata.json</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-</section>
-<section id="parsing-metadata" class="level2" data-number="1.2">
-<h2 data-number="1.2" class="anchored" data-anchor-id="parsing-metadata"><span class="header-section-number">1.2</span> Parsing Metadata</h2>
-<p>The metadata sidecar contains summary statistics for each session:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"session_id"</span><span class="fu">:</span> <span class="st">"session_20260618"</span><span class="fu">,</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"frames_processed"</span><span class="fu">:</span> <span class="dv">1420</span><span class="fu">,</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"total_detections"</span><span class="fu">:</span> <span class="dv">35</span><span class="fu">,</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"classes_found"</span><span class="fu">:</span> <span class="fu">{</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"Apis_mellifera"</span><span class="fu">:</span> <span class="dv">30</span><span class="fu">,</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"Bombus_spp"</span><span class="fu">:</span> <span class="dv">5</span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">}</span></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>You can load these JSON files directly into R or Python for downstream ecological analysis.</p>
+<section id="camera-inventory" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="camera-inventory"><span class="header-section-number">1.2</span> 2. Camera Inventory</h2>
+<p>Use this table to curate your cameras, their hostnames (for connecting via your phone), and their hardware IDs.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Camera Name</th>
+<th style="text-align: left;">Hostname / Address</th>
+<th style="text-align: left;">Passwords</th>
+<th style="text-align: left;">Hardware Serial</th>
+<th style="text-align: left;">Deployment Site</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>PolliCam-01</strong></td>
+<td style="text-align: left;"><code>pollicam-01.local</code></td>
+<td style="text-align: left;"><code>pollicam</code></td>
+<td style="text-align: left;"><code>000000001a2b3c4d</code></td>
+<td style="text-align: left;">Site A (Meadow)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>PolliCam-02</strong></td>
+<td style="text-align: left;"><code>pollicam-02.local</code></td>
+<td style="text-align: left;"><code>pollicam</code></td>
+<td style="text-align: left;"><code>00000000deadbeef</code></td>
+<td style="text-align: left;">Site B (Forest Edge)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>PolliCam-03</strong></td>
+<td style="text-align: left;"><code>pollicam-03.local</code></td>
+<td style="text-align: left;"><code>pollicam</code></td>
+<td style="text-align: left;"><code>TBD</code></td>
+<td style="text-align: left;">Unassigned</td>
+</tr>
+</tbody>
+</table>
+<blockquote class="blockquote">
+<p><strong>Tip:</strong> You can access any camera’s control panel from your phone by typing <code>http://&lt;hostname&gt;:5000</code> in your web browser, as long as it’s connected to your mobile hotspot!</p>
+</blockquote>
 
 
 </section>

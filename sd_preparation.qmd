@@ -64,4 +64,4 @@ To enable Standalone Access Point mode, run:
 ```bash
 curl -sSL https://raw.githubusercontent.com/jakubstenc/YOLO_camera/master/enable_hotspot.sh | bash
 ```
-Once it finishes, your SSH connection will drop. On your phone, turn off your mobile hotspot, turn ON Wi-Fi, and connect to the new `PolliCam-<number>` network (Password: `pollicam_field`).
+Once it finishes, your SSH connection will drop. On your phone, turn off your mobile hotspot, turn ON Wi-Fi, and connect to the new `PolliCam-<number>` network (it is an Open network, no password required).

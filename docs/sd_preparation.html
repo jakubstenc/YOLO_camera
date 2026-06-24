@@ -249,7 +249,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>If your phone has routing issues or you don’t want to use your phone’s battery to run a hotspot, you can convert the camera into its own standalone Wi-Fi hotspot. * <strong>Pro:</strong> 100% reliable connection (<code>https://192.168.4.1:5000</code>), bypasses all Android bugs. * <strong>Con:</strong> The camera will not have internet access to auto-upload data. You must download data via SD card or manually connect it to Wi-Fi later.</p>
 <p>To enable Standalone Access Point mode, run:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-sSL</span> https://raw.githubusercontent.com/jakubstenc/YOLO_camera/master/enable_hotspot.sh <span class="kw">|</span> <span class="fu">bash</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Once it finishes, your SSH connection will drop. On your phone, turn off your mobile hotspot, turn ON Wi-Fi, and connect to the new <code>PolliCam-&lt;number&gt;</code> network (Password: <code>pollicam_field</code>).</p>
+<p>Once it finishes, your SSH connection will drop. On your phone, turn off your mobile hotspot, turn ON Wi-Fi, and connect to the new <code>PolliCam-&lt;number&gt;</code> network (it is an Open network, no password required).</p>
 
 
 </section>

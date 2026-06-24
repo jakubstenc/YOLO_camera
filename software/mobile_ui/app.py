@@ -319,4 +319,12 @@ def shutdown():
 
 if __name__ == '__main__':
     time.sleep(5)
-    app.run(host='0.0.0.0', port=5000, ssl_context='adhoc', threaded=True)
+    ssl_cert = os.path.join(BASE_DIR, 'cert.pem')
+    ssl_key = os.path.join(BASE_DIR, 'key.pem')
+    if not os.path.exists(ssl_cert) or not os.path.exists(ssl_key):
+        subprocess.run([
+            'openssl', 'req', '-x509', '-newkey', 'rsa:4096', '-nodes', 
+            '-out', ssl_cert, '-keyout', ssl_key, '-days', '3650', 
+            '-subj', '/CN=pollicam'
+        ])
+    app.run(host='0.0.0.0', port=5000, ssl_context=(ssl_cert, ssl_key), threaded=True)

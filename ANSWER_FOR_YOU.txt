@@ -1,0 +1,19 @@
+Awesome! Since you successfully installed git and pip, you can now clone the code and install the Python packages.
+
+Run these commands in your SSH terminal one by one:
+
+1. Download the code:
+git clone https://github.com/jakubstenc/YOLO_camera.git
+
+2. Go into the software directory:
+cd YOLO_camera/software
+
+3. Install the required Python packages (we use --break-system-packages because this camera is dedicated just to this project):
+pip3 install -r requirements.txt --break-system-packages
+
+4. Finally, you can test if the camera software runs successfully by manually starting the daemon:
+python3 main_daemon.py
+
+(You should see it print out that it is starting the capture simulation and sync worker).
+
+Let me know if it runs!

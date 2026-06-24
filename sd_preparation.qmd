@@ -23,7 +23,14 @@ Before deploying the PolliCam, the Raspberry Pi SD card must be flashed and conf
 
 ## Software Installation
 
-Once booted, SSH into the Pi and run the setup scripts.
+Once booted, SSH into the Pi using the hostname you configured in the previous step.
+
+```bash
+# Connect to the Raspberry Pi
+ssh pi@pollicam-01.local
+```
+
+Then, run the setup scripts:
 
 ```bash
 # Update system

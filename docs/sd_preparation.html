@@ -171,10 +171,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul class="collapse">
   <li><a href="#flashing-the-os" id="toc-flashing-the-os" class="nav-link" data-scroll-target="#flashing-the-os"><span class="header-section-number">1.1</span> Flashing the OS</a></li>
   <li><a href="#software-installation" id="toc-software-installation" class="nav-link" data-scroll-target="#software-installation"><span class="header-section-number">1.2</span> Software Installation</a></li>
-  <li><a href="#field-networking-options" id="toc-field-networking-options" class="nav-link" data-scroll-target="#field-networking-options"><span class="header-section-number">1.3</span> Field Networking Options</a>
+  <li><a href="#connecting-in-the-field" id="toc-connecting-in-the-field" class="nav-link" data-scroll-target="#connecting-in-the-field"><span class="header-section-number">1.3</span> Connecting in the Field</a>
   <ul class="collapse">
-  <li><a href="#option-1-mobile-hotspot-client-recommended-for-ioswindows" id="toc-option-1-mobile-hotspot-client-recommended-for-ioswindows" class="nav-link" data-scroll-target="#option-1-mobile-hotspot-client-recommended-for-ioswindows"><span class="header-section-number">1.3.1</span> Option 1: Mobile Hotspot Client (Recommended for iOS/Windows)</a></li>
-  <li><a href="#option-2-standalone-access-point-best-for-android-no-internet" id="toc-option-2-standalone-access-point-best-for-android-no-internet" class="nav-link" data-scroll-target="#option-2-standalone-access-point-best-for-android-no-internet"><span class="header-section-number">1.3.2</span> Option 2: Standalone Access Point (Best for Android / No Internet)</a></li>
+  <li><a href="#android-smart-network-troubleshooting" id="toc-android-smart-network-troubleshooting" class="nav-link" data-scroll-target="#android-smart-network-troubleshooting"><span class="header-section-number">1.3.1</span> Android “Smart Network” Troubleshooting</a></li>
   </ul></li>
   </ul></li>
   </ul>
@@ -229,27 +228,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Once booted, SSH into the Pi using the hostname you configured in the previous step.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Connect to the Raspberry Pi</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ssh</span> pi@pollicam-01.local</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Then, simply run this single installation command to automatically set up the camera, install all dependencies, and configure it to boot automatically:</p>
+<p>Then, simply run this single installation command. It will automatically set up the camera, install all dependencies, optimize the battery, and <strong>convert the camera into a Standalone Wi-Fi Hotspot</strong>.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-sSL</span> https://raw.githubusercontent.com/jakubstenc/YOLO_camera/master/install.sh <span class="kw">|</span> <span class="fu">bash</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Once the installation finishes, the web interface will run automatically as a background service (<code>pollicam-ui.service</code>).</p>
-<p>You can access the camera interface from your phone or computer at: <code>https://&lt;hostname&gt;.local:5000</code></p>
 <blockquote class="blockquote">
-<p><strong>Warning:</strong> Because the camera generates a self-signed security certificate to allow GPS access, your browser will show a “Your connection is not private” warning. This is expected! Simply click <strong>Advanced</strong> and then <strong>Proceed to [hostname] (unsafe)</strong>.</p>
+<p>[!WARNING] Because the camera converts itself into a Wi-Fi router at the end of the script, <strong>your SSH connection will immediately drop</strong>. This is expected!</p>
 </blockquote>
 </section>
-<section id="field-networking-options" class="level2" data-number="1.3">
-<h2 data-number="1.3" class="anchored" data-anchor-id="field-networking-options"><span class="header-section-number">1.3</span> Field Networking Options</h2>
-<p>When deploying the camera in the field, you have two options for connecting your phone to the camera’s web interface.</p>
-<section id="option-1-mobile-hotspot-client-recommended-for-ioswindows" class="level3" data-number="1.3.1">
-<h3 data-number="1.3.1" class="anchored" data-anchor-id="option-1-mobile-hotspot-client-recommended-for-ioswindows"><span class="header-section-number">1.3.1</span> Option 1: Mobile Hotspot Client (Recommended for iOS/Windows)</h3>
-<p>By default, the camera acts as a client and connects to your phone’s mobile hotspot. This gives the camera internet access to upload data automatically. * <strong>iOS/Windows:</strong> Connect your camera to your phone’s hotspot and simply go to <code>https://&lt;hostname&gt;.local:5000</code> * <strong>Android Devices:</strong> Android blocks <code>.local</code> names on hotspots. To fix this, you can run a script that permanently assigns a predictable IP based on the camera’s number (e.g., <code>pi1</code> becomes <code>...101</code>): <code>bash     curl -sSL https://raw.githubusercontent.com/jakubstenc/YOLO_camera/master/lock_ip.sh | bash</code></p>
-</section>
-<section id="option-2-standalone-access-point-best-for-android-no-internet" class="level3" data-number="1.3.2">
-<h3 data-number="1.3.2" class="anchored" data-anchor-id="option-2-standalone-access-point-best-for-android-no-internet"><span class="header-section-number">1.3.2</span> Option 2: Standalone Access Point (Best for Android / No Internet)</h3>
-<p>If your phone has routing issues or you don’t want to use your phone’s battery to run a hotspot, you can convert the camera into its own standalone Wi-Fi hotspot. * <strong>Pro:</strong> 100% reliable connection (<code>https://192.168.4.1:5000</code>), bypasses all Android bugs. * <strong>Con:</strong> The camera will not have internet access to auto-upload data. You must download data via SD card or manually connect it to Wi-Fi later.</p>
-<p>To enable Standalone Access Point mode, run:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-sSL</span> https://raw.githubusercontent.com/jakubstenc/YOLO_camera/master/enable_hotspot.sh <span class="kw">|</span> <span class="fu">bash</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Once it finishes, your SSH connection will drop. On your phone, turn off your mobile hotspot, turn ON Wi-Fi, and connect to the new <code>PolliCam-&lt;number&gt;</code> network (it is an Open network, no password required).</p>
+<section id="connecting-in-the-field" class="level2" data-number="1.3">
+<h2 data-number="1.3" class="anchored" data-anchor-id="connecting-in-the-field"><span class="header-section-number">1.3</span> Connecting in the Field</h2>
+<p>Once the script finishes, the camera is fully autonomous and broadcasting its own Open Wi-Fi network.</p>
+<ol type="1">
+<li>On your phone or laptop, connect to the new <strong><code>PolliCam-&lt;number&gt;</code></strong> Wi-Fi network (e.g., <code>PolliCam-1</code>).</li>
+<li>Open Google Chrome and go exactly to: <code>https://192.168.4.1:5000</code></li>
+</ol>
+<blockquote class="blockquote">
+<p><strong>Note on Browser Warnings:</strong> Because the camera generates a self-signed security certificate to allow GPS access, your browser will show a “Your connection is not private” warning. This is expected! Simply click <strong>Advanced</strong> and then <strong>Proceed to 192.168.4.1 (unsafe)</strong>.</p>
+</blockquote>
+<section id="android-smart-network-troubleshooting" class="level3" data-number="1.3.1">
+<h3 data-number="1.3.1" class="anchored" data-anchor-id="android-smart-network-troubleshooting"><span class="header-section-number">1.3.1</span> Android “Smart Network” Troubleshooting</h3>
+<p>If you are using an Android phone, it may detect that the camera’s Wi-Fi has no internet and secretly route your web traffic through your 4G/5G mobile data instead, causing the webpage to fail to load.</p>
+<p><strong>To force your Android phone to connect:</strong> 1. Turn <strong>ON</strong> Airplane Mode (to disable the 4G/5G antenna). 2. Turn Wi-Fi back <strong>ON</strong>. 3. Connect to the <code>PolliCam</code> network. If a pop-up says “Network has no internet”, you MUST tap “Keep connection”. 4. Open a completely <strong>NEW Incognito/Private tab</strong> in Chrome and type <code>https://192.168.4.1:5000</code>.</p>
 
 
 </section>

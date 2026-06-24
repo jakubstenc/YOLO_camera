@@ -30,38 +30,29 @@ Once booted, SSH into the Pi using the hostname you configured in the previous s
 ssh pi@pollicam-01.local
 ```
 
-Then, simply run this single installation command to automatically set up the camera, install all dependencies, and configure it to boot automatically:
+Then, simply run this single installation command. It will automatically set up the camera, install all dependencies, optimize the battery, and **convert the camera into a Standalone Wi-Fi Hotspot**.
 
 ```bash
 curl -sSL https://raw.githubusercontent.com/jakubstenc/YOLO_camera/master/install.sh | bash
 ```
 
-Once the installation finishes, the web interface will run automatically as a background service (`pollicam-ui.service`).
+> [!WARNING]
+> Because the camera converts itself into a Wi-Fi router at the end of the script, **your SSH connection will immediately drop**. This is expected!
 
-You can access the camera interface from your phone or computer at:
-`https://<hostname>.local:5000`
+## Connecting in the Field
 
-> **Warning:** Because the camera generates a self-signed security certificate to allow GPS access, your browser will show a "Your connection is not private" warning. This is expected! Simply click **Advanced** and then **Proceed to [hostname] (unsafe)**.
+Once the script finishes, the camera is fully autonomous and broadcasting its own Open Wi-Fi network.
 
-## Field Networking Options
+1. On your phone or laptop, connect to the new **`PolliCam-<number>`** Wi-Fi network (e.g., `PolliCam-1`).
+2. Open Google Chrome and go exactly to: `https://192.168.4.1:5000`
 
-When deploying the camera in the field, you have two options for connecting your phone to the camera's web interface.
+> **Note on Browser Warnings:** Because the camera generates a self-signed security certificate to allow GPS access, your browser will show a "Your connection is not private" warning. This is expected! Simply click **Advanced** and then **Proceed to 192.168.4.1 (unsafe)**.
 
-### Option 1: Mobile Hotspot Client (Recommended for iOS/Windows)
-By default, the camera acts as a client and connects to your phone's mobile hotspot. This gives the camera internet access to upload data automatically.
-*   **iOS/Windows:** Connect your camera to your phone's hotspot and simply go to `https://<hostname>.local:5000`
-*   **Android Devices:** Android blocks `.local` names on hotspots. To fix this, you can run a script that permanently assigns a predictable IP based on the camera's number (e.g., `pi1` becomes `...101`):
-    ```bash
-    curl -sSL https://raw.githubusercontent.com/jakubstenc/YOLO_camera/master/lock_ip.sh | bash
-    ```
+### Android "Smart Network" Troubleshooting
+If you are using an Android phone, it may detect that the camera's Wi-Fi has no internet and secretly route your web traffic through your 4G/5G mobile data instead, causing the webpage to fail to load.
 
-### Option 2: Standalone Access Point (Best for Android / No Internet)
-If your phone has routing issues or you don't want to use your phone's battery to run a hotspot, you can convert the camera into its own standalone Wi-Fi hotspot. 
-*   **Pro:** 100% reliable connection (`https://192.168.4.1:5000`), bypasses all Android bugs.
-*   **Con:** The camera will not have internet access to auto-upload data. You must download data via SD card or manually connect it to Wi-Fi later.
-
-To enable Standalone Access Point mode, run:
-```bash
-curl -sSL https://raw.githubusercontent.com/jakubstenc/YOLO_camera/master/enable_hotspot.sh | bash
-```
-Once it finishes, your SSH connection will drop. On your phone, turn off your mobile hotspot, turn ON Wi-Fi, and connect to the new `PolliCam-<number>` network (it is an Open network, no password required).
+**To force your Android phone to connect:**
+1. Turn **ON** Airplane Mode (to disable the 4G/5G antenna).
+2. Turn Wi-Fi back **ON**.
+3. Connect to the `PolliCam` network. If a pop-up says "Network has no internet", you MUST tap "Keep connection".
+4. Open a completely **NEW Incognito/Private tab** in Chrome and type `https://192.168.4.1:5000`.

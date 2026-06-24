@@ -70,9 +70,28 @@ if [ -f /etc/rc.local ]; then
 fi
 
 echo ""
+echo "[6/6] Configuring Standalone Access Point (Hotspot)..."
+CAM_NUM=$(hostname | tr -dc '0-9')
+if [ -z "$CAM_NUM" ]; then
+    CAM_NUM="X"
+fi
+SSID="PolliCam-${CAM_NUM}"
+
+sudo nmcli con delete Hotspot > /dev/null 2>&1 || true
+sudo nmcli con add type wifi ifname wlan0 con-name Hotspot autoconnect yes ssid "$SSID" > /dev/null
+sudo nmcli con modify Hotspot 802-11-wireless.mode ap 802-11-wireless.band bg ipv4.method shared > /dev/null
+sudo nmcli con modify Hotspot ipv4.addresses 192.168.4.1/24 > /dev/null
+
+echo "Bringing up the hotspot..."
+sudo nmcli con up Hotspot > /dev/null 2>&1 || true
+
+echo ""
 echo "======================================"
 echo "✅ PolliCam Installation Complete!"
-echo "The web interface is now running."
-echo "You can access it at: https://$(hostname).local:5000"
-echo "Note: The Raspberry Pi may need a quick reboot to apply the battery-saving settings."
+echo "The camera is now broadcasting its own Wi-Fi network: $SSID"
+echo "Your SSH connection will drop shortly."
+echo ""
+echo "To access the camera:"
+echo "1. Connect your phone/computer to: $SSID (Open network)"
+echo "2. Open Chrome and go to: https://192.168.4.1:5000"
 echo "======================================"

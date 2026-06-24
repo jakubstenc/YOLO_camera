@@ -39,8 +39,32 @@ sudo systemctl enable pollicam-ui.service
 sudo systemctl restart pollicam-ui.service
 
 echo ""
+echo "[5/5] Optimizing system for maximum battery life..."
+sudo systemctl disable bluetooth.service || true
+sudo systemctl disable hciuart.service || true
+
+CONFIG_FILE="/boot/firmware/config.txt"
+if [ ! -f "$CONFIG_FILE" ]; then
+    CONFIG_FILE="/boot/config.txt"
+fi
+
+if ! grep -q "dtoverlay=disable-bt" "$CONFIG_FILE"; then
+    echo "dtoverlay=disable-bt" | sudo tee -a "$CONFIG_FILE"
+fi
+
+if ! grep -q "dtparam=act_led_trigger=none" "$CONFIG_FILE"; then
+    echo "dtparam=act_led_trigger=none" | sudo tee -a "$CONFIG_FILE"
+    echo "dtparam=act_led_activelow=off" | sudo tee -a "$CONFIG_FILE"
+fi
+
+if ! grep -q "dtparam=audio=off" "$CONFIG_FILE"; then
+    echo "dtparam=audio=off" | sudo tee -a "$CONFIG_FILE"
+fi
+
+echo ""
 echo "======================================"
 echo "✅ PolliCam Installation Complete!"
 echo "The web interface is now running."
-echo "You can access it at: http://$(hostname).local:5000"
+echo "You can access it at: https://$(hostname).local:5000"
+echo "Note: The Raspberry Pi may need a quick reboot to apply the battery-saving settings."
 echo "======================================"

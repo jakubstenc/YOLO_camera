@@ -1,0 +1,107 @@
+[
+  {
+    "objectID": "hardware.html",
+    "href": "hardware.html",
+    "title": "Hardware & Models",
+    "section": "",
+    "text": "This section outlines the physical and mechanical integration of the PolliCam field hardware.\n\n\n(Placeholder for an image of the final 3D box model) \n\n\nYou can download the STL files required for 3D printing the camera enclosure and internal mounts here:\n\nCamera Box (Base) - Please ensure this link points to your actual file.\nPi Zero 2 W Cradle\nM12 Vent Mount\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nVersion\nDate\nChanges\nAuthor\n\n\n\n\nv1.0\n2026-06-18\nInitial box layout, resolved boolean errors for M12 vent and Pi cradle.\nKuba\n\n\nv0.9\n2026-06-10\nPrototypes for internal mounting.\nKuba"
+  },
+  {
+    "objectID": "hardware.html#d-models",
+    "href": "hardware.html#d-models",
+    "title": "Hardware & Models",
+    "section": "",
+    "text": "(Placeholder for an image of the final 3D box model) \n\n\nYou can download the STL files required for 3D printing the camera enclosure and internal mounts here:\n\nCamera Box (Base) - Please ensure this link points to your actual file.\nPi Zero 2 W Cradle\nM12 Vent Mount"
+  },
+  {
+    "objectID": "hardware.html#version-tracking",
+    "href": "hardware.html#version-tracking",
+    "title": "Hardware & Models",
+    "section": "",
+    "text": "Version\nDate\nChanges\nAuthor\n\n\n\n\nv1.0\n2026-06-18\nInitial box layout, resolved boolean errors for M12 vent and Pi cradle.\nKuba\n\n\nv0.9\n2026-06-10\nPrototypes for internal mounting.\nKuba"
+  },
+  {
+    "objectID": "data_management.html",
+    "href": "data_management.html",
+    "title": "Data Management",
+    "section": "",
+    "text": "The PolliCam pushes all captured images and JSON metadata sidecars to a central storage cluster.\n\n\nData is synced via WebDAV. You can retrieve it using standard tools like curl, wget, or dedicated WebDAV clients.\n\n\nThe server organizes data by camera identity and session ID:\n/pollicam_data/\n├── PolliCam_01/\n│   ├── session_20260618/\n│   │   ├── session_20260618_120500.jpg\n│   │   └── session_metadata.json\n├── PolliCam_02/\n...\n\n\n\nTo download the metadata for analysis, you can use rsync or download directly via your browser if the WebDAV server allows it.\n# Example: downloading a specific session's metadata\ncurl -u username:password -O https://storage.cesnet.cz/pollicam/PolliCam_01/session_20260618/session_metadata.json\n\n\n\n\nThe metadata sidecar contains summary statistics for each session:\n{\n  \"session_id\": \"session_20260618\",\n  \"frames_processed\": 1420,\n  \"total_detections\": 35,\n  \"classes_found\": {\n    \"Apis_mellifera\": 30,\n    \"Bombus_spp\": 5\n  }\n}\nYou can load these JSON files directly into R or Python for downstream ecological analysis."
+  },
+  {
+    "objectID": "data_management.html#accessing-cesnet-storage",
+    "href": "data_management.html#accessing-cesnet-storage",
+    "title": "Data Management",
+    "section": "",
+    "text": "Data is synced via WebDAV. You can retrieve it using standard tools like curl, wget, or dedicated WebDAV clients.\n\n\nThe server organizes data by camera identity and session ID:\n/pollicam_data/\n├── PolliCam_01/\n│   ├── session_20260618/\n│   │   ├── session_20260618_120500.jpg\n│   │   └── session_metadata.json\n├── PolliCam_02/\n...\n\n\n\nTo download the metadata for analysis, you can use rsync or download directly via your browser if the WebDAV server allows it.\n# Example: downloading a specific session's metadata\ncurl -u username:password -O https://storage.cesnet.cz/pollicam/PolliCam_01/session_20260618/session_metadata.json"
+  },
+  {
+    "objectID": "data_management.html#parsing-metadata",
+    "href": "data_management.html#parsing-metadata",
+    "title": "Data Management",
+    "section": "",
+    "text": "The metadata sidecar contains summary statistics for each session:\n{\n  \"session_id\": \"session_20260618\",\n  \"frames_processed\": 1420,\n  \"total_detections\": 35,\n  \"classes_found\": {\n    \"Apis_mellifera\": 30,\n    \"Bombus_spp\": 5\n  }\n}\nYou can load these JSON files directly into R or Python for downstream ecological analysis."
+  },
+  {
+    "objectID": "operation_deployment.html",
+    "href": "operation_deployment.html",
+    "title": "Operation & Deployment",
+    "section": "",
+    "text": "The primary software running the camera is the PolliCam Field Daemon.\n\nContinuous Capture & Inference: The daemon continuously captures images and runs YOLO inference locally.\nLogging: A metadata sidecar (JSON format) is generated per session, logging detection counts and classes (e.g., Apis_mellifera).\nSyncing: The daemon runs a background thread (sync_worker) that periodically attempts to upload data to the CESNET WebDAV server when an internet connection is available.\n\n\n\n\n\nMounting: Ensure the 3D-printed enclosure is securely mounted at the observation site.\nPower: Connect the power source (battery pack or solar controller) to the Pi.\nBoot Sequence: Wait approximately 60 seconds for the Pi to boot and the daemon to initialize.\nNetwork: If using a mobile hotspot for real-time syncing, ensure the hotspot is active. The daemon will automatically detect the connection and begin uploading data. If no connection is found, it will log locally and upload later.\nValidation: Connect to the same network as the camera and verify SSH access to ensure it is running without errors.\n\n# Check daemon logs\njournalctl -u pollicam -f"
+  },
+  {
+    "objectID": "operation_deployment.html#operating-the-cameras",
+    "href": "operation_deployment.html#operating-the-cameras",
+    "title": "Operation & Deployment",
+    "section": "",
+    "text": "The primary software running the camera is the PolliCam Field Daemon.\n\nContinuous Capture & Inference: The daemon continuously captures images and runs YOLO inference locally.\nLogging: A metadata sidecar (JSON format) is generated per session, logging detection counts and classes (e.g., Apis_mellifera).\nSyncing: The daemon runs a background thread (sync_worker) that periodically attempts to upload data to the CESNET WebDAV server when an internet connection is available."
+  },
+  {
+    "objectID": "operation_deployment.html#field-deployment-instructions",
+    "href": "operation_deployment.html#field-deployment-instructions",
+    "title": "Operation & Deployment",
+    "section": "",
+    "text": "Mounting: Ensure the 3D-printed enclosure is securely mounted at the observation site.\nPower: Connect the power source (battery pack or solar controller) to the Pi.\nBoot Sequence: Wait approximately 60 seconds for the Pi to boot and the daemon to initialize.\nNetwork: If using a mobile hotspot for real-time syncing, ensure the hotspot is active. The daemon will automatically detect the connection and begin uploading data. If no connection is found, it will log locally and upload later.\nValidation: Connect to the same network as the camera and verify SSH access to ensure it is running without errors.\n\n# Check daemon logs\njournalctl -u pollicam -f"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "PolliCam Field Infrastructure",
+    "section": "",
+    "text": "This is the comprehensive documentation for the YOLO Camera project (PolliCam). Here you will find everything needed to assemble, deploy, and manage the field cameras.\n\n\n\nHardware & Models\nSD Card Preparation\nOperation & Deployment\nData Management"
+  },
+  {
+    "objectID": "index.html#quick-links",
+    "href": "index.html#quick-links",
+    "title": "PolliCam Field Infrastructure",
+    "section": "",
+    "text": "Hardware & Models\nSD Card Preparation\nOperation & Deployment\nData Management"
+  },
+  {
+    "objectID": "sd_preparation.html",
+    "href": "sd_preparation.html",
+    "title": "SD Card Preparation",
+    "section": "",
+    "text": "Before deploying the PolliCam, the Raspberry Pi SD card must be flashed and configured with the core daemon software.\n\n\n\nDownload the Raspberry Pi Imager.\nSelect Raspberry Pi OS Lite (64-bit).\nChoose your target SD card.\nClick the gear icon to pre-configure:\n\nHostname (e.g., pollicam-01)\nEnable SSH (Use public-key authentication if possible)\nSet up your Wi-Fi credentials (for your mobile hotspot)\nSet the locale settings.\n\nWrite and verify the image.\n\n\nTip for Field Access: Because you set a unique Hostname (like pollicam-01), you don’t need to hunt for its IP address on your phone. You can connect using a stable address based on its ID! Just SSH into &lt;hostname&gt;.local (for example, ssh pi@pollicam-01.local).\n\n\n\n\nOnce booted, SSH into the Pi and run the setup scripts.\n# Update system\nsudo apt update && sudo apt upgrade -y\n\n# Clone repository\ngit clone https://github.com/your-org/YOLO_camera.git\ncd YOLO_camera/software\n\n# Install Python dependencies\npip install -r requirements.txt\n\n\n\nThe PolliCam field daemon (main_daemon.py) runs automatically on boot. To set this up as a systemd service:\n\nCopy the provided service file (if available) to /etc/systemd/system/pollicam.service.\nEnable and start the service:\nsudo systemctl enable pollicam.service\nsudo systemctl start pollicam.service"
+  },
+  {
+    "objectID": "sd_preparation.html#flashing-the-os",
+    "href": "sd_preparation.html#flashing-the-os",
+    "title": "SD Card Preparation",
+    "section": "",
+    "text": "Download the Raspberry Pi Imager.\nSelect Raspberry Pi OS Lite (64-bit).\nChoose your target SD card.\nClick the gear icon to pre-configure:\n\nHostname (e.g., pollicam-01)\nEnable SSH (Use public-key authentication if possible)\nSet up your Wi-Fi credentials (for your mobile hotspot)\nSet the locale settings.\n\nWrite and verify the image.\n\n\nTip for Field Access: Because you set a unique Hostname (like pollicam-01), you don’t need to hunt for its IP address on your phone. You can connect using a stable address based on its ID! Just SSH into &lt;hostname&gt;.local (for example, ssh pi@pollicam-01.local)."
+  },
+  {
+    "objectID": "sd_preparation.html#software-installation",
+    "href": "sd_preparation.html#software-installation",
+    "title": "SD Card Preparation",
+    "section": "",
+    "text": "Once booted, SSH into the Pi and run the setup scripts.\n# Update system\nsudo apt update && sudo apt upgrade -y\n\n# Clone repository\ngit clone https://github.com/your-org/YOLO_camera.git\ncd YOLO_camera/software\n\n# Install Python dependencies\npip install -r requirements.txt"
+  },
+  {
+    "objectID": "sd_preparation.html#configuring-the-daemon",
+    "href": "sd_preparation.html#configuring-the-daemon",
+    "title": "SD Card Preparation",
+    "section": "",
+    "text": "The PolliCam field daemon (main_daemon.py) runs automatically on boot. To set this up as a systemd service:\n\nCopy the provided service file (if available) to /etc/systemd/system/pollicam.service.\nEnable and start the service:\nsudo systemctl enable pollicam.service\nsudo systemctl start pollicam.service"
+  }
+]

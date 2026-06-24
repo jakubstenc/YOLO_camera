@@ -1,0 +1,51 @@
+---
+title: "Data Management"
+---
+
+# Downloading Data and Metadata
+
+The PolliCam pushes all captured images and JSON metadata sidecars to a central storage cluster.
+
+## Accessing CESNET Storage
+
+Data is synced via WebDAV. You can retrieve it using standard tools like `curl`, `wget`, or dedicated WebDAV clients.
+
+### Directory Structure
+
+The server organizes data by camera identity and session ID:
+
+```text
+/pollicam_data/
+├── PolliCam_01/
+│   ├── session_20260618/
+│   │   ├── session_20260618_120500.jpg
+│   │   └── session_metadata.json
+├── PolliCam_02/
+...
+```
+
+### Retrieving Metadata
+
+To download the metadata for analysis, you can use `rsync` or download directly via your browser if the WebDAV server allows it.
+
+```bash
+# Example: downloading a specific session's metadata
+curl -u username:password -O https://storage.cesnet.cz/pollicam/PolliCam_01/session_20260618/session_metadata.json
+```
+
+## Parsing Metadata
+
+The metadata sidecar contains summary statistics for each session:
+
+```json
+{
+  "session_id": "session_20260618",
+  "frames_processed": 1420,
+  "total_detections": 35,
+  "classes_found": {
+    "Apis_mellifera": 30,
+    "Bombus_spp": 5
+  }
+}
+```
+You can load these JSON files directly into R or Python for downstream ecological analysis.

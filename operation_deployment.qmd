@@ -1,0 +1,26 @@
+---
+title: "Operation & Deployment"
+---
+
+# Operation & Deployment
+
+## Operating the Cameras
+
+The primary software running the camera is the **PolliCam Field Daemon**.
+
+*   **Continuous Capture & Inference**: The daemon continuously captures images and runs YOLO inference locally.
+*   **Logging**: A metadata sidecar (JSON format) is generated per session, logging detection counts and classes (e.g., `Apis_mellifera`).
+*   **Syncing**: The daemon runs a background thread (`sync_worker`) that periodically attempts to upload data to the CESNET WebDAV server when an internet connection is available.
+
+## Field Deployment Instructions
+
+1.  **Mounting**: Ensure the 3D-printed enclosure is securely mounted at the observation site.
+2.  **Power**: Connect the power source (battery pack or solar controller) to the Pi.
+3.  **Boot Sequence**: Wait approximately 60 seconds for the Pi to boot and the daemon to initialize.
+4.  **Network**: If using a mobile hotspot for real-time syncing, ensure the hotspot is active. The daemon will automatically detect the connection and begin uploading data. If no connection is found, it will log locally and upload later.
+5.  **Validation**: Connect to the same network as the camera and verify SSH access to ensure it is running without errors.
+
+```bash
+# Check daemon logs
+journalctl -u pollicam -f
+```

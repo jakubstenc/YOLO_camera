@@ -1,0 +1,27 @@
+---
+title: "Hardware & Models"
+---
+
+# PolliCam Hardware
+
+This section outlines the physical and mechanical integration of the PolliCam field hardware.
+
+## 3D Models
+
+*(Placeholder for an image of the final 3D box model)*
+![PolliCam 3D Render Placeholder](images/placeholder_render.png)
+
+### Files to Download
+
+You can download the STL files required for 3D printing the camera enclosure and internal mounts here:
+
+* [Camera Box (Base)](../box_blender_files/box_base.stl) - *Please ensure this link points to your actual file.*
+* [Pi Zero 2 W Cradle](../box_blender_files/pi_cradle.stl)
+* [M12 Vent Mount](../box_blender_files/vent_mount.stl)
+
+## Version Tracking
+
+| Version | Date       | Changes                                                                 | Author |
+|---------|------------|-------------------------------------------------------------------------|--------|
+| v1.0    | 2026-06-18 | Initial box layout, resolved boolean errors for M12 vent and Pi cradle. | Kuba   |
+| v0.9    | 2026-06-10 | Prototypes for internal mounting.                                       | Kuba   |

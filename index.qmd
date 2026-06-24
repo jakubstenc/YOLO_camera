@@ -1,0 +1,14 @@
+---
+title: "PolliCam Field Infrastructure"
+---
+
+# Welcome to YOLO Camera
+
+This is the comprehensive documentation for the YOLO Camera project (PolliCam). Here you will find everything needed to assemble, deploy, and manage the field cameras.
+
+## Quick Links
+
+* [Hardware & Models](hardware.qmd)
+* [SD Card Preparation](sd_preparation.qmd)
+* [Operation & Deployment](operation_deployment.qmd)
+* [Data Management](data_management.qmd)

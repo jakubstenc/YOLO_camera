@@ -1,0 +1,26 @@
+project:
+  type: website
+  output-dir: docs
+
+website:
+  title: "YOLO Camera Documentation"
+  navbar:
+    background: primary
+    left:
+      - href: index.qmd
+        text: Home
+      - href: hardware.qmd
+        text: Hardware
+      - href: sd_preparation.qmd
+        text: SD Card Prep
+      - href: operation_deployment.qmd
+        text: Operation
+      - href: data_management.qmd
+        text: Data
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: true
+    number-sections: true

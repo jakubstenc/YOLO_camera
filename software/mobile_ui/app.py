@@ -91,9 +91,18 @@ HTML_PAGE = """
                         })
                     })
                     .then(res => res.json())
-                    .then(data => { document.getElementById('status-log').innerText = data.message; });
+                    .then(data => { 
+                        let lat = position.coords.latitude.toFixed(5);
+                        let lon = position.coords.longitude.toFixed(5);
+                        let mapLink = `https://mapy.cz/zakladni?q=${lat},${lon}`;
+                        document.getElementById('status-log').innerHTML = `${data.message}<br><br>📍 Nalezená poloha: ${lat}, ${lon} <br><br><a href="${mapLink}" target="_blank" style="color:#4caf50; font-weight:bold; text-decoration:underline;">🌍 Zkontrolovat na Mapy.cz</a>`; 
+                    });
                 }, function(error) {
-                    document.getElementById('status-log').innerText = "Chyba GPS: Povolte přístup k poloze.";
+                    if(window.location.protocol !== 'https:') {
+                        document.getElementById('status-log').innerHTML = "Chyba GPS: Telefony blokují GPS na nezabezpečeném připojení.<br>Musíte použít <b>https://</b> místo http:// !";
+                    } else {
+                        document.getElementById('status-log').innerText = "Chyba GPS (" + error.code + "): Povolte přístup k poloze v nastavení telefonu.";
+                    }
                 }, { enableHighAccuracy: true });
             } else {
                 document.getElementById('status-log').innerText = "GPS není podporováno.";
@@ -310,4 +319,4 @@ def shutdown():
 
 if __name__ == '__main__':
     time.sleep(5)
-    app.run(host='0.0.0.0', port=5000, threaded=True)
+    app.run(host='0.0.0.0', port=5000, ssl_context='adhoc', threaded=True)

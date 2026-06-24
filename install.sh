@@ -61,6 +61,12 @@ if ! grep -q "dtparam=audio=off" "$CONFIG_FILE"; then
     echo "dtparam=audio=off" | sudo tee -a "$CONFIG_FILE"
 fi
 
+# Disable HDMI chip power to save ~25mA
+if ! grep -q "vcgencmd display_power 0" /etc/rc.local; then
+    # Insert before 'exit 0' in rc.local
+    sudo sed -i -e '$i \/usr/bin/vcgencmd display_power 0\n' /etc/rc.local || true
+fi
+
 echo ""
 echo "======================================"
 echo "✅ PolliCam Installation Complete!"

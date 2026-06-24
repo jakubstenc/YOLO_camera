@@ -171,7 +171,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul class="collapse">
   <li><a href="#flashing-the-os" id="toc-flashing-the-os" class="nav-link" data-scroll-target="#flashing-the-os"><span class="header-section-number">1.1</span> Flashing the OS</a></li>
   <li><a href="#software-installation" id="toc-software-installation" class="nav-link" data-scroll-target="#software-installation"><span class="header-section-number">1.2</span> Software Installation</a></li>
-  <li><a href="#optional-predictable-android-ips" id="toc-optional-predictable-android-ips" class="nav-link" data-scroll-target="#optional-predictable-android-ips"><span class="header-section-number">1.3</span> Optional: Predictable Android IPs</a></li>
+  <li><a href="#field-networking-options" id="toc-field-networking-options" class="nav-link" data-scroll-target="#field-networking-options"><span class="header-section-number">1.3</span> Field Networking Options</a>
+  <ul class="collapse">
+  <li><a href="#option-1-mobile-hotspot-client-recommended-for-ioswindows" id="toc-option-1-mobile-hotspot-client-recommended-for-ioswindows" class="nav-link" data-scroll-target="#option-1-mobile-hotspot-client-recommended-for-ioswindows"><span class="header-section-number">1.3.1</span> Option 1: Mobile Hotspot Client (Recommended for iOS/Windows)</a></li>
+  <li><a href="#option-2-standalone-access-point-best-for-android-no-internet" id="toc-option-2-standalone-access-point-best-for-android-no-internet" class="nav-link" data-scroll-target="#option-2-standalone-access-point-best-for-android-no-internet"><span class="header-section-number">1.3.2</span> Option 2: Standalone Access Point (Best for Android / No Internet)</a></li>
+  </ul></li>
   </ul></li>
   </ul>
 </nav>
@@ -233,14 +237,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><strong>Warning:</strong> Because the camera generates a self-signed security certificate to allow GPS access, your browser will show a “Your connection is not private” warning. This is expected! Simply click <strong>Advanced</strong> and then <strong>Proceed to [hostname] (unsafe)</strong>.</p>
 </blockquote>
 </section>
-<section id="optional-predictable-android-ips" class="level2" data-number="1.3">
-<h2 data-number="1.3" class="anchored" data-anchor-id="optional-predictable-android-ips"><span class="header-section-number">1.3</span> Optional: Predictable Android IPs</h2>
-<p>Android phones do not natively support <code>.local</code> hostnames when acting as a mobile hotspot. To easily bookmark the camera on an Android device without guessing its IP address, you can assign it a <strong>Predictable IP</strong>.</p>
-<p>Run the following script to permanently lock the camera’s IP based on its hostname (e.g., <code>pi1</code> becomes <code>...101</code>, <code>pi2</code> becomes <code>...102</code>):</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-sSL</span> https://raw.githubusercontent.com/jakubstenc/YOLO_camera/master/lock_ip.sh <span class="kw">|</span> <span class="fu">bash</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><em>Note: Your SSH connection will drop as soon as the IP changes. Reconnect using the new IP address.</em></p>
+<section id="field-networking-options" class="level2" data-number="1.3">
+<h2 data-number="1.3" class="anchored" data-anchor-id="field-networking-options"><span class="header-section-number">1.3</span> Field Networking Options</h2>
+<p>When deploying the camera in the field, you have two options for connecting your phone to the camera’s web interface.</p>
+<section id="option-1-mobile-hotspot-client-recommended-for-ioswindows" class="level3" data-number="1.3.1">
+<h3 data-number="1.3.1" class="anchored" data-anchor-id="option-1-mobile-hotspot-client-recommended-for-ioswindows"><span class="header-section-number">1.3.1</span> Option 1: Mobile Hotspot Client (Recommended for iOS/Windows)</h3>
+<p>By default, the camera acts as a client and connects to your phone’s mobile hotspot. This gives the camera internet access to upload data automatically. * <strong>iOS/Windows:</strong> Connect your camera to your phone’s hotspot and simply go to <code>https://&lt;hostname&gt;.local:5000</code> * <strong>Android Devices:</strong> Android blocks <code>.local</code> names on hotspots. To fix this, you can run a script that permanently assigns a predictable IP based on the camera’s number (e.g., <code>pi1</code> becomes <code>...101</code>): <code>bash     curl -sSL https://raw.githubusercontent.com/jakubstenc/YOLO_camera/master/lock_ip.sh | bash</code></p>
+</section>
+<section id="option-2-standalone-access-point-best-for-android-no-internet" class="level3" data-number="1.3.2">
+<h3 data-number="1.3.2" class="anchored" data-anchor-id="option-2-standalone-access-point-best-for-android-no-internet"><span class="header-section-number">1.3.2</span> Option 2: Standalone Access Point (Best for Android / No Internet)</h3>
+<p>If your phone has routing issues or you don’t want to use your phone’s battery to run a hotspot, you can convert the camera into its own standalone Wi-Fi hotspot. * <strong>Pro:</strong> 100% reliable connection (<code>https://192.168.4.1:5000</code>), bypasses all Android bugs. * <strong>Con:</strong> The camera will not have internet access to auto-upload data. You must download data via SD card or manually connect it to Wi-Fi later.</p>
+<p>To enable Standalone Access Point mode, run:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-sSL</span> https://raw.githubusercontent.com/jakubstenc/YOLO_camera/master/enable_hotspot.sh <span class="kw">|</span> <span class="fu">bash</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Once it finishes, your SSH connection will drop. On your phone, turn off your mobile hotspot, turn ON Wi-Fi, and connect to the new <code>PolliCam-&lt;number&gt;</code> network (Password: <code>pollicam_field</code>).</p>
 
 
+</section>
 </section>
 </section>
 

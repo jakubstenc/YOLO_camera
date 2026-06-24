@@ -43,14 +43,25 @@ You can access the camera interface from your phone or computer at:
 
 > **Warning:** Because the camera generates a self-signed security certificate to allow GPS access, your browser will show a "Your connection is not private" warning. This is expected! Simply click **Advanced** and then **Proceed to [hostname] (unsafe)**.
 
-## Optional: Predictable Android IPs
+## Field Networking Options
 
-Android phones do not natively support `.local` hostnames when acting as a mobile hotspot. To easily bookmark the camera on an Android device without guessing its IP address, you can assign it a **Predictable IP**.
+When deploying the camera in the field, you have two options for connecting your phone to the camera's web interface.
 
-Run the following script to permanently lock the camera's IP based on its hostname (e.g., `pi1` becomes `...101`, `pi2` becomes `...102`):
+### Option 1: Mobile Hotspot Client (Recommended for iOS/Windows)
+By default, the camera acts as a client and connects to your phone's mobile hotspot. This gives the camera internet access to upload data automatically.
+*   **iOS/Windows:** Connect your camera to your phone's hotspot and simply go to `https://<hostname>.local:5000`
+*   **Android Devices:** Android blocks `.local` names on hotspots. To fix this, you can run a script that permanently assigns a predictable IP based on the camera's number (e.g., `pi1` becomes `...101`):
+    ```bash
+    curl -sSL https://raw.githubusercontent.com/jakubstenc/YOLO_camera/master/lock_ip.sh | bash
+    ```
 
+### Option 2: Standalone Access Point (Best for Android / No Internet)
+If your phone has routing issues or you don't want to use your phone's battery to run a hotspot, you can convert the camera into its own standalone Wi-Fi hotspot. 
+*   **Pro:** 100% reliable connection (`https://192.168.4.1:5000`), bypasses all Android bugs.
+*   **Con:** The camera will not have internet access to auto-upload data. You must download data via SD card or manually connect it to Wi-Fi later.
+
+To enable Standalone Access Point mode, run:
 ```bash
-curl -sSL https://raw.githubusercontent.com/jakubstenc/YOLO_camera/master/lock_ip.sh | bash
+curl -sSL https://raw.githubusercontent.com/jakubstenc/YOLO_camera/master/enable_hotspot.sh | bash
 ```
-
-*Note: Your SSH connection will drop as soon as the IP changes. Reconnect using the new IP address.*
+Once it finishes, your SSH connection will drop. On your phone, turn off your mobile hotspot, turn ON Wi-Fi, and connect to the new `PolliCam-<number>` network (Password: `pollicam_field`).

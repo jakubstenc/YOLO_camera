@@ -1,6 +1,7 @@
 import subprocess
 import os
 import time
+import json
 from flask import Flask, Response, render_template_string, request, jsonify
 
 app = Flask(__name__)
@@ -70,6 +71,34 @@ HTML_PAGE = """
                 });
             }
         }
+        function saveGPSMetadata() {
+            let folder = document.getElementById('folder').value;
+            let localIso = new Date().toISOString();
+            
+            document.getElementById('status-log').innerText = "Získávám GPS polohu...";
+            
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    fetch('/save_metadata', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            folder: folder,
+                            time: localIso,
+                            latitude: position.coords.latitude,
+                            longitude: position.coords.longitude,
+                            accuracy: position.coords.accuracy
+                        })
+                    })
+                    .then(res => res.json())
+                    .then(data => { document.getElementById('status-log').innerText = data.message; });
+                }, function(error) {
+                    document.getElementById('status-log').innerText = "Chyba GPS: Povolte přístup k poloze.";
+                }, { enableHighAccuracy: true });
+            } else {
+                document.getElementById('status-log').innerText = "GPS není podporováno.";
+            }
+        }
         function checkDisk() {
             fetch('/disk_space')
             .then(res => res.json())
@@ -132,6 +161,7 @@ HTML_PAGE = """
         <button class="btn btn-stop" onclick="stopExperiment()">Zastavit monitoring</button>
         
         <div style="margin-top: 20px;">
+            <button class="btn" style="background:#ff9800; padding:10px; font-size:1rem;" onclick="saveGPSMetadata()">Uložit GPS polohu a čas</button>
             <button class="btn" style="background:#555; padding:10px; font-size:1rem;" onclick="checkDisk()">Zkontrolovat místo</button>
             <button class="btn" style="background:#007bff; padding:10px; font-size:1rem;" onclick="updateSystem()">Aktualizovat software</button>
             <button class="btn" style="background:#d32f2f; padding:10px; font-size:1rem;" onclick="shutdownSystem()">Vypnout systém</button>
@@ -219,6 +249,34 @@ def stop():
         os.system("pkill -9 -f sleep")
         os.system("pkill -f 'rpicam-jpeg -n -o'")
         return jsonify({"message": "Monitoring ZASTAVEN."})
+    except Exception as e:
+        return jsonify({"message": f"Chyba: {str(e)}"}), 500
+
+@app.route('/save_metadata', methods=['POST'])
+def save_metadata():
+    data = request.get_json()
+    folder_name = data.get('folder', 'pokus_01').strip().replace(" ", "_")
+    target_dir = os.path.join(BASE_DIR, folder_name)
+    os.makedirs(target_dir, exist_ok=True)
+    
+    metadata_file = os.path.join(target_dir, "metadata.json")
+    metadata = {}
+    if os.path.exists(metadata_file):
+        try:
+            with open(metadata_file, 'r') as f:
+                metadata = json.load(f)
+        except:
+            pass
+            
+    metadata["phone_time"] = data.get("time")
+    metadata["gps_latitude"] = data.get("latitude")
+    metadata["gps_longitude"] = data.get("longitude")
+    metadata["gps_accuracy_meters"] = data.get("accuracy")
+    
+    try:
+        with open(metadata_file, 'w') as f:
+            json.dump(metadata, f, indent=4)
+        return jsonify({"message": f"GPS a čas úspěšně uloženy do složky {folder_name}!"})
     except Exception as e:
         return jsonify({"message": f"Chyba: {str(e)}"}), 500
 

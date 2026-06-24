@@ -1,15 +1,10 @@
-You found another bug! 
+Got it! Option 3 it is.
 
-The reason you got "ERR_CONNECTION_REFUSED" is because the app actually crashed this time! When it tried to generate the permanent security certificate, it tried to save it to the `monitoring_data` folder, but because we just rebooted a fresh install, that folder didn't exist yet, so it crashed!
+I have just written a completely custom script that will automatically figure out your phone's network details (IP, gateway, subnet) and force the camera to lock them in permanently.
 
-I have just fixed the code to ensure it creates the folder first before generating the certificate.
+In your SSH terminal on the Raspberry Pi, simply copy and paste this ONE command:
 
-HOW TO RECONNECT AND FIX IT:
-I noticed in your terminal that your last SSH command failed. That's because you accidentally typed it backwards! 
-You typed `ssh pi1@policam.local`, but it should be:
-ssh policam1@pi1.local
+curl -sSL https://raw.githubusercontent.com/jakubstenc/YOLO_camera/master/lock_ip.sh | bash
 
-Once you SSH back in, run the installer one more time to pull this final bug fix:
-curl -sSL https://raw.githubusercontent.com/jakubstenc/YOLO_camera/master/install.sh | bash
-
-After it finishes, the app will instantly boot up and the `https://pi1.local:5000` page will load!
+Once you press enter, the script will say "Success!" and print out the exact IP address. 
+You can now safely bookmark that IP address on your phone, and it will NEVER change again as long as you use this same phone!

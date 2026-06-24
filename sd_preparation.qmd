@@ -30,28 +30,10 @@ Once booted, SSH into the Pi using the hostname you configured in the previous s
 ssh pi@pollicam-01.local
 ```
 
-Then, run the setup scripts:
+Then, simply run this single installation command to automatically set up the camera, install all dependencies, and configure it to boot automatically:
 
 ```bash
-# Update system and install required tools
-sudo apt update && sudo apt upgrade -y
-sudo apt install git python3-pip python3-venv -y
-
-# Clone repository
-git clone https://github.com/your-org/YOLO_camera.git
-cd YOLO_camera/software
-
-# Install Python dependencies
-pip install -r requirements.txt
+curl -sSL https://raw.githubusercontent.com/jakubstenc/YOLO_camera/master/install.sh | bash
 ```
 
-## Configuring the Daemon
-
-The PolliCam field daemon (`main_daemon.py`) runs automatically on boot. To set this up as a `systemd` service:
-
-1. Copy the provided service file (if available) to `/etc/systemd/system/pollicam.service`.
-2. Enable and start the service:
-   ```bash
-   sudo systemctl enable pollicam.service
-   sudo systemctl start pollicam.service
-   ```
+Once the installation finishes, the web interface will be running and you can access it immediately from your phone or computer at `http://<hostname>.local:5000`.

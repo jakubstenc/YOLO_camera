@@ -11,11 +11,9 @@ if [ -z "$CAM_NUM" ]; then
     CAM_NUM="X"
 fi
 SSID="PolliCam-${CAM_NUM}"
-PASSWORD="pollicam_field"
-
 echo "Configuring the camera to broadcast its own Wi-Fi network..."
 echo "Network Name (SSID) : $SSID"
-echo "Password            : $PASSWORD"
+echo "Security            : OPEN (No Password)"
 echo "Camera IP Address   : 192.168.4.1"
 
 # Delete any existing hotspot profile
@@ -24,7 +22,6 @@ sudo nmcli con delete Hotspot > /dev/null 2>&1 || true
 # Create the new AP profile
 sudo nmcli con add type wifi ifname wlan0 con-name Hotspot autoconnect yes ssid "$SSID" > /dev/null
 sudo nmcli con modify Hotspot 802-11-wireless.mode ap 802-11-wireless.band bg ipv4.method shared > /dev/null
-sudo nmcli con modify Hotspot wifi-sec.key-mgmt wpa-psk wifi-sec.psk "$PASSWORD" > /dev/null
 sudo nmcli con modify Hotspot ipv4.addresses 192.168.4.1/24 > /dev/null
 
 echo "Bringing up the hotspot..."

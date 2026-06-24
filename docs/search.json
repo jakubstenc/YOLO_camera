@@ -102,7 +102,7 @@
     "href": "sd_preparation.html",
     "title": "SD Card Preparation",
     "section": "",
-    "text": "Before deploying the PolliCam, the Raspberry Pi SD card must be flashed and configured with the core daemon software.\n\n\n\nDownload the Raspberry Pi Imager.\nSelect Raspberry Pi OS Lite (64-bit).\nChoose your target SD card.\nClick the gear icon to pre-configure:\n\nHostname (e.g., pollicam-01)\nEnable SSH (Use public-key authentication if possible)\nSet up your Wi-Fi credentials (for your mobile hotspot)\nSet the locale settings.\n\nWrite and verify the image.\n\n\nTip for Field Access: Because you set a unique Hostname (like pollicam-01), you don’t need to hunt for its IP address on your phone. You can connect using a stable address based on its ID! Just SSH into &lt;hostname&gt;.local (for example, ssh pi@pollicam-01.local).\n\n\n\n\nOnce booted, SSH into the Pi using the hostname you configured in the previous step.\n# Connect to the Raspberry Pi\nssh pi@pollicam-01.local\nThen, run the setup scripts:\n# Update system\nsudo apt update && sudo apt upgrade -y\n\n# Clone repository\ngit clone https://github.com/your-org/YOLO_camera.git\ncd YOLO_camera/software\n\n# Install Python dependencies\npip install -r requirements.txt\n\n\n\nThe PolliCam field daemon (main_daemon.py) runs automatically on boot. To set this up as a systemd service:\n\nCopy the provided service file (if available) to /etc/systemd/system/pollicam.service.\nEnable and start the service:\nsudo systemctl enable pollicam.service\nsudo systemctl start pollicam.service"
+    "text": "Before deploying the PolliCam, the Raspberry Pi SD card must be flashed and configured with the core daemon software.\n\n\n\nDownload the Raspberry Pi Imager.\nSelect Raspberry Pi OS Lite (64-bit).\nChoose your target SD card.\nClick the gear icon to pre-configure:\n\nHostname (e.g., pollicam-01)\nEnable SSH (Use public-key authentication if possible)\nSet up your Wi-Fi credentials (for your mobile hotspot)\nSet the locale settings.\n\nWrite and verify the image.\n\n\nTip for Field Access: Because you set a unique Hostname (like pollicam-01), you don’t need to hunt for its IP address on your phone. You can connect using a stable address based on its ID! Just SSH into &lt;hostname&gt;.local (for example, ssh pi@pollicam-01.local).\n\n\n\n\nOnce booted, SSH into the Pi using the hostname you configured in the previous step.\n# Connect to the Raspberry Pi\nssh pi@pollicam-01.local\nThen, simply run this single installation command to automatically set up the camera, install all dependencies, and configure it to boot automatically:\ncurl -sSL https://raw.githubusercontent.com/jakubstenc/YOLO_camera/master/install.sh | bash\nOnce the installation finishes, the web interface will be running and you can access it immediately from your phone or computer at http://&lt;hostname&gt;.local:5000."
   },
   {
     "objectID": "sd_preparation.html#flashing-the-os",
@@ -116,13 +116,6 @@
     "href": "sd_preparation.html#software-installation",
     "title": "SD Card Preparation",
     "section": "",
-    "text": "Once booted, SSH into the Pi using the hostname you configured in the previous step.\n# Connect to the Raspberry Pi\nssh pi@pollicam-01.local\nThen, run the setup scripts:\n# Update system\nsudo apt update && sudo apt upgrade -y\n\n# Clone repository\ngit clone https://github.com/your-org/YOLO_camera.git\ncd YOLO_camera/software\n\n# Install Python dependencies\npip install -r requirements.txt"
-  },
-  {
-    "objectID": "sd_preparation.html#configuring-the-daemon",
-    "href": "sd_preparation.html#configuring-the-daemon",
-    "title": "SD Card Preparation",
-    "section": "",
-    "text": "The PolliCam field daemon (main_daemon.py) runs automatically on boot. To set this up as a systemd service:\n\nCopy the provided service file (if available) to /etc/systemd/system/pollicam.service.\nEnable and start the service:\nsudo systemctl enable pollicam.service\nsudo systemctl start pollicam.service"
+    "text": "Once booted, SSH into the Pi using the hostname you configured in the previous step.\n# Connect to the Raspberry Pi\nssh pi@pollicam-01.local\nThen, simply run this single installation command to automatically set up the camera, install all dependencies, and configure it to boot automatically:\ncurl -sSL https://raw.githubusercontent.com/jakubstenc/YOLO_camera/master/install.sh | bash\nOnce the installation finishes, the web interface will be running and you can access it immediately from your phone or computer at http://&lt;hostname&gt;.local:5000."
   }
 ]

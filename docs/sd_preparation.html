@@ -171,7 +171,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul class="collapse">
   <li><a href="#flashing-the-os" id="toc-flashing-the-os" class="nav-link" data-scroll-target="#flashing-the-os"><span class="header-section-number">1.1</span> Flashing the OS</a></li>
   <li><a href="#software-installation" id="toc-software-installation" class="nav-link" data-scroll-target="#software-installation"><span class="header-section-number">1.2</span> Software Installation</a></li>
-  <li><a href="#configuring-the-daemon" id="toc-configuring-the-daemon" class="nav-link" data-scroll-target="#configuring-the-daemon"><span class="header-section-number">1.3</span> Configuring the Daemon</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -225,26 +224,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Once booted, SSH into the Pi using the hostname you configured in the previous step.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Connect to the Raspberry Pi</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ssh</span> pi@pollicam-01.local</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Then, run the setup scripts:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Update system</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt update <span class="kw">&amp;&amp;</span> <span class="fu">sudo</span> apt upgrade <span class="at">-y</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Clone repository</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/your-org/YOLO_camera.git</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> YOLO_camera/software</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Install Python dependencies</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="at">-r</span> requirements.txt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="configuring-the-daemon" class="level2" data-number="1.3">
-<h2 data-number="1.3" class="anchored" data-anchor-id="configuring-the-daemon"><span class="header-section-number">1.3</span> Configuring the Daemon</h2>
-<p>The PolliCam field daemon (<code>main_daemon.py</code>) runs automatically on boot. To set this up as a <code>systemd</code> service:</p>
-<ol type="1">
-<li><p>Copy the provided service file (if available) to <code>/etc/systemd/system/pollicam.service</code>.</p></li>
-<li><p>Enable and start the service:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> systemctl enable pollicam.service</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> systemctl start pollicam.service</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
-</ol>
+<p>Then, simply run this single installation command to automatically set up the camera, install all dependencies, and configure it to boot automatically:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-sSL</span> https://raw.githubusercontent.com/jakubstenc/YOLO_camera/master/install.sh <span class="kw">|</span> <span class="fu">bash</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Once the installation finishes, the web interface will be running and you can access it immediately from your phone or computer at <code>http://&lt;hostname&gt;.local:5000</code>.</p>
 
 
 </section>

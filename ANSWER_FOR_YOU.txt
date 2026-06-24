@@ -1,19 +1,22 @@
-Awesome! Since you successfully installed git and pip, you can now clone the code and install the Python packages.
+Ah, you ran into Apple/Google's strict security rules! 
 
-Run these commands in your SSH terminal one by one:
+Modern phones completely block the GPS feature unless the website is loaded securely using `https://`. Because our camera was using normal `http://`, the phone immediately blocked it and threw an error, even though you had location turned on.
 
-1. Download the code:
-git clone https://github.com/jakubstenc/YOLO_camera.git
+I just pushed a major update that:
+1. Forces the camera to use secure `https://`.
+2. Prints out the exact GPS coordinates to the screen when you click the button.
+3. Gives you a clickable link that opens directly in Mapy.cz so you can visually verify it!
 
-2. Go into the software directory:
-cd YOLO_camera/software
+To install this update on the camera, this is the perfect time to test out our new 1-click auto-installer!
+Just paste this into your SSH terminal:
 
-3. Install the required Python packages (we use --break-system-packages because this camera is dedicated just to this project):
-pip3 install -r requirements.txt --break-system-packages
+curl -sSL https://raw.githubusercontent.com/jakubstenc/YOLO_camera/master/install.sh | bash
 
-4. Finally, you can test if the camera software runs successfully by manually starting the daemon:
-python3 main_daemon.py
+HOW TO ACCESS IT NOW:
+Because we switched to secure HTTPS, you must now type `https://` in your browser:
+https://192.168.97.199:5000
 
-(You should see it print out that it is starting the capture simulation and sync worker).
+⚠️ IMPORTANT: Your phone browser will show a scary warning saying "This connection is not private". This is completely normal because our offline camera doesn't have an official internet certificate. 
+Just click "Advanced" and then "Proceed to 192.168.97.199". 
 
-Let me know if it runs!
+Once you are in, click the GPS button. It will ask for permission, grab the coordinates, and give you the Mapy.cz link!

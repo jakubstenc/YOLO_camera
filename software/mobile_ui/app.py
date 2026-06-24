@@ -5,7 +5,7 @@ from flask import Flask, Response, render_template_string, request, jsonify
 
 app = Flask(__name__)
 
-BASE_DIR = "/home/pi/monitoring_data"
+BASE_DIR = os.path.expanduser("~/monitoring_data")
 os.makedirs(BASE_DIR, exist_ok=True)
 
 HTML_PAGE = """
@@ -236,7 +236,7 @@ def disk_space():
 @app.route('/update_system', methods=['POST'])
 def update_system():
     try:
-        subprocess.Popen(['bash', '/home/pi/YOLO_camera/software/updater/sync_repo.sh'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        subprocess.Popen(['bash', os.path.expanduser('~/YOLO_camera/software/updater/sync_repo.sh')], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         return jsonify({"message": "Aktualizace spuštěna. Kamera se může restartovat."})
     except Exception as e:
         return jsonify({"message": f"Chyba aktualizace: {str(e)}"}), 500

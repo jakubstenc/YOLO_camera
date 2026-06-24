@@ -69,6 +69,7 @@ HTML_PAGE = """
                     setTimeout(() => { location.reload(); }, 1500);
                 });
             }
+        }
         function checkDisk() {
             fetch('/disk_space')
             .then(res => res.json())
